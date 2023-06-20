@@ -3,6 +3,7 @@ import { ref, defineProps } from 'vue'
 // import ListsWork from "./ListsWork.vue"
 import CLineListsWork from './CLineListsWork.vue';
 
+
 // interface Work {
 //   value: string
 // }
@@ -14,7 +15,7 @@ const props = defineProps({
 const placeholder = ref('')
 const work = ref('')
 const toDoList = ref<string[]>([])
-const currenitem = ref<(number|string)[]>([])
+const currenitem = ref<(any)[]>([])
 function handleSubmit() {
   if (work.value.length > 0) {
     toDoList.value.push(work.value)
@@ -36,7 +37,7 @@ function updateItem(index: number, currenWork: string) {
 
   // toDoList.value.splice(index, 1,workReplace);
 }
-function onUpdate() {
+function onUpdate():void {
   console.log(currenitem.value[0]);
   console.log(work.value);
   toDoList.value[currenitem.value[0]] = work.value
@@ -60,8 +61,8 @@ function onUpdate() {
       <input class="button" type="submit" value="update" v-if="!update" @click="onUpdate">
     </form>
   </div>
-  <CLineListsWork v-for="(work, index) in toDoList" :key="index" :work="work" :index='index' @detele-work="deleteItem"
-    @update-work="updateItem" />
+  <CLineListsWork v-for="(work, index) in toDoList" :key="index" :work="work" :index='index' @delete-work="deleteItem" @update-work="updateItem" />
+
 </template>
 
 <style scoped>
