@@ -12,7 +12,7 @@ const props = defineProps({
 })
 let statusT=props.big?.status||[]
 // console.log(statusT[props.index]);/
-let done = ref<boolean>(statusT[props.index] || false)
+let done = ref<boolean>(props.big?.status || false)
 const emit = defineEmits(['deteleWork', 'updateWork','finishWork','statusTest'])
 function handleDelete() {
     emit('deteleWork', props.index)
@@ -23,10 +23,9 @@ function handleUpdate() {
 function handleFinish(){
     // emit('finishWork',props.index)
     done.value = !done.value;
-    statusT[props.index||0]=done.value 
+    statusT[props.index||0]=done.value
     // console.log(statusT);
     emit('statusTest',statusT,props.index)
-    // window.localStorage.setItem('status', JSON.stringify(statusT))
 }
 </script>
 <template>
