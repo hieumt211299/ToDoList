@@ -47,9 +47,11 @@ function deleteItem(index: number) {
   //   return x.workT!= toDoListT.value[index].workT
   // })
   // console.log(test);
-  toDoListT.value[index].status ? location.reload():0
+  location.reload()
+  // toDoListT.value[index].status ? location.reload():0
   // toDoListT.value= test
   // clonedToDoListT = [...toDoListT.value];
+  // console.log(toDoListT.value.);
   toDoListT.value.splice(index,1)
 
   window.localStorage.setItem('toDoListT', JSON.stringify(toDoListT.value))
