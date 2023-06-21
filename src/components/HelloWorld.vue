@@ -1,54 +1,124 @@
 <script setup lang="ts">
-import { ref, defineProps } from 'vue'
+import { ref, defineProps, onMounted ,onUpdated, onUnmounted , onBeforeMount,onBeforeUpdate} from 'vue'
 // import ListsWork from "./ListsWork.vue"
 import CLineListsWork from './CLineListsWork.vue';
-
 
 // interface Work {
 //   value: string
 // }
+// onMounted(() => {
+//   console.log('on mounted');
+// })
+
+const statusString = window.localStorage.getItem('status');
+const statusLocal = statusString ? ref<boolean[]>(JSON.parse(statusString)) : ref<boolean[]>([])
+
+const toDoListString= window.localStorage.getItem('toDoList');
+const toDoListLocal = toDoListString ? ref<string[]>(JSON.parse(toDoListString)) : ref<string[]>()
+
+const toDoListTString= window.localStorage.getItem('toDoListT');
+const toDoListTLocal = toDoListTString ? ref<string[]>(JSON.parse(toDoListTString)) : ref<string[]>()
+console.log(toDoListTLocal);
+
+// {
+//   value: 
+//   status:
+// }
+// interface task {
+//   workT:String
+//   status:boolean
+// }
+
 
 const update = ref(true)
 const props = defineProps({
   msg: String
 })
+
 const placeholder = ref('')
 const work = ref('')
-const toDoList = ref<string[]>([])
-const currenitem = ref<(any)[]>([])
+// let done=ref(false)
+let toDoList = ref<string[]>([])
+let toDoListT= ref<object[]>([])
+let status=ref<boolean[]>([])
+const currenitem = ref<any[]>([])
+toDoList.value = toDoListLocal.value ? toDoListLocal.value : []
+status.value = statusLocal.value
+
+
+
+
 function handleSubmit() {
   if (work.value.length > 0) {
-    toDoList.value.push(work.value)
+    toDoList.value.push(work.value) 
+    status.value.push(false)
+    let test={
+      workT:work.value,
+      status:false
+    }
+    toDoListT.value.push(test)
     work.value = '';
-    console.log(toDoList.value);
+
   }
 }
 function deleteItem(index: number) {
-  toDoList.value.splice(index, 1);
+  // toDoList.value.splice(index, 1);
+  // status.value.splice(index, 1);
+  toDoListT.value.splice(index,1);
+
+  // location.reload()
 }
 function updateItem(index: number, currenWork: string) {
-  // let workReplace=prompt('sua cong viec')
-  // let workReplace=null
+
   placeholder.value = currenWork
   update.value = !update.value
   currenitem.value.push(index)
   currenitem.value.push(currenWork)
-  // console.log(currenitem.value);
 
-  // toDoList.value.splice(index, 1,workReplace);
 }
 function onUpdate():void {
-  console.log(currenitem.value[0]);
-  console.log(work.value);
-  toDoList.value[currenitem.value[0]] = work.value
-  currenitem.value.splice(0, currenitem.value.length)
+  
+  console.log(toDoListT.value[currenitem.value[0]]);
+  console.log(toDoListT.value[currenitem.value[0]].workT);
+  toDoListT.value[currenitem.value[0]].workT=work.value
+  
   update.value = !update.value
   work.value = ''
   placeholder.value = ''
+  currenitem.value=[]
+
+  // toDoList.value[currenitem.value[0]] = work.value
+  // currenitem.value.splice(0, currenitem.value.length)
+  // update.value = !update.value
+  // work.value = ''
+  // placeholder.value = ''
+
 }
-    // return{
-    //   update,placeholder,work,toDoList,handleSubmit, deleteItem, updateItem, onUpdate
-    // }
+function updateStatus(statusT: [],index:number){
+  status.value[index] = statusT[index]
+}
+
+
+
+onUpdated(()=>{
+
+  // window.localStorage.setItem('toDoList', JSON.stringify(toDoList.value))
+  // window.localStorage.setItem('status', JSON.stringify(status.value))
+
+
+  window.localStorage.setItem('toDoListT', JSON.stringify(toDoListT.value))
+
+})
+
+// onUnmounted(()=>{
+// console.log('on Unmounted');
+// })
+// onBeforeMount(()=>{
+//   console.log("on Before mount");
+// })
+// onBeforeUpdate(()=>{
+//   console.log('on before update');
+// })
 </script>
 
 <template>
@@ -61,7 +131,9 @@ function onUpdate():void {
       <input class="button" type="submit" value="update" v-if="!update" @click="onUpdate">
     </form>
   </div>
-  <CLineListsWork v-for="(work, index) in toDoList" :key="index" :work="work" :index='index' @delete-work="deleteItem" @update-work="updateItem" />
+  <!-- <CLineListsWork v-for="(work, index ,test) in toDoList" :key="index" :work="work" :index='index' :test="test" :status="status" @deteleWork="deleteItem" @update-work="updateItem" @status-test="updateStatus" /> -->
+
+  <CLineListsWork v-for="(big, index) in toDoListT" :big="big" :key="index" :index="index" @deteleWork="deleteItem" @update-work="updateItem" @status-test="updateStatus"/>
 
 </template>
 

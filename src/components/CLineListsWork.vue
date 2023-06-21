@@ -1,31 +1,51 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+import { ref, defineProps, defineEmits } from 'vue'
 
 
 const props = defineProps({
     work: String,
+    done: Boolean,
+    status:Array,
+    big : Object,
     index: Number,
+
 })
-const emit = defineEmits(['deteleWork', 'updateWork'])
+let statusT=props.big?.status||[]
+// console.log(statusT[props.index]);/
+let done = ref<boolean>(statusT[props.index] || false)
+const emit = defineEmits(['deteleWork', 'updateWork','finishWork','statusTest'])
 function handleDelete() {
     emit('deteleWork', props.index)
 }
 function handleUpdate() {
-    emit('updateWork', props.index, props.work)
+    emit('updateWork', props.index, props.big?.workT)
+}
+function handleFinish(){
+    // emit('finishWork',props.index)
+    done.value = !done.value;
+    statusT[props.index||0]=done.value 
+    // console.log(statusT);
+    emit('statusTest',statusT,props.index)
+    // window.localStorage.setItem('status', JSON.stringify(statusT))
 }
 </script>
 <template>
     <div class="container">
-        <div class="lists">
-            <div class="list"> {{ work }}</div>
+        <div class="lists" :class="{ 'finish': done }">
+            <div class="list" > {{ props.big?.workT }}</div>
             <div class="buttons">
                 <button class="button" @click="handleDelete"><img src="../assets/trash.png" alt=""></button>
                 <button class="button" @click="handleUpdate"><img src="../assets/changes.png" alt=""></button>
+                <button class="button" @click="handleFinish"><img src="../assets/check.png" alt="" ></button>
             </div>
         </div>
     </div>
 </template>
 <style scoped>
+
+.finish .list{
+    text-decoration: line-through;
+}
 .container {
     width: 500px;
 }
