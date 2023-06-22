@@ -3,11 +3,10 @@ import { ref, defineProps } from "vue";
 import CLineListsWork from "./CLineListsWork.vue";
 
 const toDoListTString = window.localStorage.getItem("toDoListT");
-const toDoListTLocal = toDoListTString
-  ?JSON.parse(toDoListTString):0
-  
-const countIDString=window.localStorage.getItem('countID')
-const countIDLocal=countIDString?JSON.parse(countIDString):0
+const toDoListTLocal = toDoListTString ? JSON.parse(toDoListTString) : 0;
+
+const countIDString = window.localStorage.getItem("countID");
+const countIDLocal = countIDString ? JSON.parse(countIDString) : 0;
 console.log(countIDLocal);
 const update = ref(true);
 const props = defineProps({
@@ -22,14 +21,15 @@ const work = ref("");
 
 //
 // let toDoList = ref<string[]>([]);
-const toDoListT = ref<{ workT: string, status: boolean,id:number }[]>([]);
-const displayList = ref<{ workT: string, status: boolean, id: number  }[]>([]);
-const countID=ref<number>()
-countID.value=countIDLocal||1
+const toDoListT = ref<{ workT: string; status: boolean; id: number }[]>([]);
+const displayList = ref<{ workT: string; status: boolean; id: number }[]>([]);
+const countID = ref<number>();
+countID.value = countIDLocal || 1;
 // const status = ref<boolean[]>([]);
-const currenitem = ref<{ workT: string, status: boolean, id: number  }[]>([]);
+const currenitem = ref<{ workT: string; status: boolean; id: number }[]>([]);
 // toDoListT= toDoListTLocal.value? toDoListTLocal.value
-
+const search = ref("");
+const searchList = ref<{ workT: string; status: boolean; id: number }[]>([]);
 if (toDoListTLocal) {
   toDoListT.value = toDoListTLocal;
   displayList.value = toDoListT.value;
@@ -42,9 +42,9 @@ function handleSubmit() {
     let test = {
       workT: work.value,
       status: false,
-      id:countID.value||1
+      id: countID.value || 1,
     };
-    countID.value?countID.value++:1
+    countID.value ? countID.value++ : 1;
     toDoListT.value.push(test);
     work.value = "";
     displayList.value = toDoListT.value;
@@ -52,18 +52,19 @@ function handleSubmit() {
     window.localStorage.setItem("countID", JSON.stringify(countID.value));
   }
 }
-function deleteItem(index: number, work: String) { /* delete work* */
+function deleteItem(index: number, work: String) {
+  /* delete work* */
   // // -----
   // toDoListT.value.splice(index, 1);
   // location.reload();
-  index
+  index;
   // window.localStorage.setItem("toDoListT", JSON.stringify(toDoListT.value));
   // ------
-  let test =  toDoListT.value.filter((x) => {
+  let test = toDoListT.value.filter((x) => {
     return x.workT == work;
   });
   toDoListT.value = toDoListT.value.filter((x) => {
-    return x != test[0];  
+    return x != test[0];
   });
   displayList.value = displayList.value.filter((x) => {
     return x != test[0];
@@ -73,31 +74,29 @@ function deleteItem(index: number, work: String) { /* delete work* */
   window.localStorage.setItem("toDoListT", JSON.stringify(toDoListT.value));
 }
 
-function updateItem(status: boolean, currenWork: string, id:number) {
+function updateItem(status: boolean, currenWork: string, id: number) {
   placeholder.value = currenWork;
   update.value = !update.value;
-   let test = {
+  let test = {
     workT: currenWork,
     status: status,
-    id:id,
+    id: id,
   };
-  currenitem.value.push(test)
+  currenitem.value.push(test);
 }
 function onUpdate(): void {
-
-  toDoListT.value.forEach((x)=>{
-    if(x.id== currenitem.value[0].id){
+  toDoListT.value.forEach((x) => {
+    if (x.id == currenitem.value[0].id) {
       console.log(x.id);
-      toDoListT.value[x.id - 1].workT=work.value
+      toDoListT.value[x.id - 1].workT = work.value;
     }
-  })
+  });
 
   update.value = !update.value;
   work.value = "";
   placeholder.value = "";
   currenitem.value = [];
   window.localStorage.setItem("toDoListT", JSON.stringify(toDoListT.value));
-  
 
   // toDoList.value[currenitem.value[0]] = work.value
   // currenitem.value.splice(0, currenitem.value.length)
@@ -105,41 +104,39 @@ function onUpdate(): void {
   // work.value = ''
   // placeholder.value = ''
 }
-function updateStatus(statusT: boolean, id: number,index:number) {
+function updateStatus(statusT: boolean, id: number, index: number) {
+  // displayList.value[index].status = statusT;
+  displayList.value.forEach((x) => {
+    if (x.id === id) {
+      displayList.value[id - 1].status = statusT;
+    }
+  });
+  toDoListT.value.forEach((x) => {
+    if (x.id === id) {
+      toDoListT.value[id - 1].status = statusT;
+    }
+  });
 
-  toDoListT.value[id-1].status=statusT;
-  displayList.value[index].status=statusT
-  console.log(toDoListT.value);
-  console.log(displayList.value);
   window.localStorage.setItem("toDoListT", JSON.stringify(toDoListT.value));
-
   // console.log(displayList.value[index].status=statusT);
-
 }
 
 //  search function
-const search = ref("");
-const searchList = ref<{ workT: string, status: boolean, id: number }[]>([]);
+
 function handleSearch() {
-  
   displayList.value = toDoListT.value;
   searchList.value = displayList.value.filter((x) => {
-    return (x).workT.includes(search.value);
+    return x.workT.includes(search.value);
   });
-
   displayList.value = searchList.value;
+  console.log(displayList.value);
 }
-
-
 </script>
 
 <template>
   <h1>{{ props.msg }}</h1>
   <div class="container">
-    <form
-      @submit.prevent="handleSubmit"
-      class="newtask"
-    >
+    <form @submit.prevent="handleSubmit" class="newtask">
       <label for="worktodo"></label>
       <input
         class="text"
@@ -162,7 +159,7 @@ function handleSearch() {
   <!-- <CLineListsWork v-for="(work, index ,test) in toDoList" :key="index" :work="work" :index='index' :test="test" :status="status" @deteleWork="deleteItem" @update-work="updateItem" @status-test="updateStatus" /> -->
   <form @submit.prevent="handleSearch">
     <label for="search"></label>
-    <input type="text" name="sreach" id="sreach"  v-model="search" />
+    <input type="text" name="sreach" id="sreach" v-model="search" />
     <input type="submit" value="Submit" />
   </form>
   <CLineListsWork

@@ -2,15 +2,12 @@
 import { ref, defineProps, defineEmits } from "vue";
 
 const props = defineProps({
-  work: String,
   done: Boolean,
-  status: Array,
   big: Object,
   index: Number,
 });
-let statusT = props.big?.status;
+let statusT = ref<boolean>(props.big?.status);
 // console.log(statusT[props.index]);/
-let done = ref<boolean>(props.big?.status || false);
 const emit = defineEmits([
   "deteleWork",
   "updateWork",
@@ -18,20 +15,19 @@ const emit = defineEmits([
   "statusTest",
 ]);
 function handleDelete() {
-  emit("deteleWork", props.index,props.big?.workT);
+  emit("deteleWork", props.index, props.big?.workT);
 }
 function handleUpdate() {
-  emit("updateWork", props.big?.status, props.big?.workT,props.big?.id);
+  emit("updateWork", props.big?.status, props.big?.workT, props.big?.id);
 }
 function handleFinish() {
-  done.value = !done.value;
-  statusT= done.value;
-  emit("statusTest", statusT, props.big?.id,props.index);
+  statusT.value = !statusT.value;
+  emit("statusTest", statusT.value, props.big?.id, props.index);
 }
 </script>
 <template>
   <div class="container">
-    <div class="lists" :class="{ finish: done }">
+    <div class="lists" :class="{ finish: statusT }">
       <div class="list">{{ props.big?.workT }}</div>
       <div class="buttons">
         <button class="button" @click="handleDelete">
