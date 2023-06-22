@@ -8,7 +8,7 @@ const props = defineProps({
   big: Object,
   index: Number,
 });
-let statusT = props.big?.status || [];
+let statusT = props.big?.status;
 // console.log(statusT[props.index]);/
 let done = ref<boolean>(props.big?.status || false);
 const emit = defineEmits([
@@ -18,17 +18,15 @@ const emit = defineEmits([
   "statusTest",
 ]);
 function handleDelete() {
-  emit("deteleWork", props.index, props.big?.workT);
+  emit("deteleWork", props.index,props.big?.workT);
 }
 function handleUpdate() {
-  emit("updateWork", props.index, props.big?.workT);
+  emit("updateWork", props.big?.status, props.big?.workT,props.big?.id);
 }
 function handleFinish() {
-  // emit('finishWork',props.index)
   done.value = !done.value;
-  statusT[props.index || 0] = done.value;
-  // console.log(statusT);
-  emit("statusTest", statusT, props.index);
+  statusT= done.value;
+  emit("statusTest", statusT, props.big?.id,props.index);
 }
 </script>
 <template>
