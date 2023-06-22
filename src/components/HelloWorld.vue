@@ -47,20 +47,18 @@ function handleSubmit() {
     window.localStorage.setItem("toDoListT", JSON.stringify(toDoListT.value));
   }
 }
-function deleteItem(index: number, work: String) {
+function deleteItem(index: number, work: String) { /* delete work* */
   // // -----
-  // location.reload();
   // toDoListT.value.splice(index, 1);
+  // location.reload();
 
   // window.localStorage.setItem("toDoListT", JSON.stringify(toDoListT.value));
   // ------
   let test = ref<object[]>([]);
   test.value = toDoListT.value.filter((x) => {
-    // console.log(work);
-    console.log(x.workT);
     return x.workT == work;
   });
-  console.log(test.value);
+  // console.log(test.value);
 
   toDoListT.value = toDoListT.value.filter((x) => {
     return x != test.value[0];
@@ -68,9 +66,13 @@ function deleteItem(index: number, work: String) {
   displayList.value = displayList.value.filter((x) => {
     return x != test.value[0];
   });
+  // syncData()
   window.localStorage.setItem("toDoListT", JSON.stringify(toDoListT.value));
-
   test.value = [];
+}
+
+function syncData(){
+  displayList.value=toDoListT.value
 }
 
 function updateItem(index: number, currenWork: string) {
@@ -101,21 +103,16 @@ function updateStatus(statusT: boolean[], index: number) {
   window.localStorage.setItem("toDoListT", JSON.stringify(displayList.value));
 }
 
-// const placeholderSearch = ref('')
+//  search function
 const search = ref("");
 const searchList = ref<object[]>([]);
-const isFormDisabled = ref<boolean>(false);
 function handleSearch() {
-  if (toDoListTLocal.value) {
-    displayList.value = toDoListTLocal.value as Object[];
-  }
+
+  displayList.value = toDoListT.value as Object[];
   searchList.value = displayList.value.filter((x) => {
     return x.workT.includes(search.value);
   });
   displayList.value = searchList.value;
-  if (displayList.value.length != toDoListTLocal.value?.length) {
-    isFormDisabled.value = true;
-  } else isFormDisabled.value = false;
 }
 
 // onUpdated(()=>{
@@ -139,7 +136,6 @@ function handleSearch() {
     <form
       @submit.prevent="handleSubmit"
       class="newtask"
-      :class="{ disabled: isFormDisabled }"
     >
       <label for="worktodo"></label>
       <input
@@ -163,7 +159,7 @@ function handleSearch() {
   <!-- <CLineListsWork v-for="(work, index ,test) in toDoList" :key="index" :work="work" :index='index' :test="test" :status="status" @deteleWork="deleteItem" @update-work="updateItem" @status-test="updateStatus" /> -->
   <form @submit.prevent="handleSearch">
     <label for="search"></label>
-    <input type="text" name="sreach" id="sreach" v-model="search" />
+    <input type="text" name="sreach" id="sreach" :placeholderSearch="placeholderSearch" v-model="search" />
     <input type="submit" value="Submit" />
   </form>
   <CLineListsWork
