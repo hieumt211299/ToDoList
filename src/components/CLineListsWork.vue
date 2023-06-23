@@ -15,15 +15,14 @@ const emit = defineEmits([
   "statusTest",
 ]);
 function handleDelete() {
-  emit("deteleWork", props.index,props.big?.workT);
+  emit("deteleWork", props.index, props.big?.workT);
 }
 function handleUpdate() {
-  emit("updateWork", props.big?.status, props.big?.workT,props.big?.id);
+  emit("updateWork", props.big?.status, props.big?.workT, props.big?.id);
 }
 function handleFinish() {
-  done.value = !done.value;
-  statusT= done.value;
-  emit("statusTest", statusT, props.big?.id,props.index);
+  statusT.value = !statusT.value;
+  emit("statusTest", statusT.value, props.big?.id, props.index);
 }
 </script>
 <template>

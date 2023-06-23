@@ -30,9 +30,9 @@ function handleSubmit() { /* function nhap* */
     const test = {
       workT: work.value,
       status: false,
-      id:countID.value||1
+      id: countID.value || 1,
     };
-    countID.value?countID.value++:1
+    countID.value ? countID.value++ : 1;
     toDoListT.value.push(test);
     work.value = "";
     displayList.value = toDoListT.value;
@@ -48,7 +48,7 @@ function deleteItem(index: number, work: String) { /* delete work* */
     return x.workT == work;
   });
   toDoListT.value = toDoListT.value.filter((x) => {
-    return x != test[0];  
+    return x != test[0];
   });
   displayList.value = displayList.value.filter((x) => {
     return x != test[0];
@@ -61,12 +61,12 @@ function deleteItem(index: number, work: String) { /* delete work* */
 function updateItem(status: boolean, currenWork: string, id:number) { /** sua work */
   work.value = currenWork
   update.value = !update.value;
-   let test = {
+  let test = {
     workT: currenWork,
     status: status,
-    id:id,
+    id: id,
   };
-  currenitem.value.push(test)
+  currenitem.value.push(test);
 }
 function onUpdate(): void {/**cap nhat work  */
   toDoListT.value.forEach((x)=>{
@@ -107,10 +107,7 @@ function handleSearch() {
 <template>
   <h1>{{ props.msg }}</h1>
   <div class="container">
-    <form
-      @submit.prevent="handleSubmit"
-      class="newtask"
-    >
+    <form @submit.prevent="handleSubmit" class="newtask">
       <label for="worktodo"></label>
       <input
         type="text"
@@ -133,7 +130,7 @@ function handleSearch() {
   <!-- <CLineListsWork v-for="(work, index ,test) in toDoList" :key="index" :work="work" :index='index' :test="test" :status="status" @deteleWork="deleteItem" @update-work="updateItem" @status-test="updateStatus" /> -->
   <form @submit.prevent="handleSearch">
     <label for="search"></label>
-    <input type="text" name="sreach" id="sreach"  v-model="search" />
+    <input type="text" name="sreach" id="sreach" v-model="search" />
     <input type="submit" value="Submit" />
   </form>
   <CLineListsWork
