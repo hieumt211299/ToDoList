@@ -2,15 +2,12 @@
 import { ref, defineProps, defineEmits } from "vue";
 
 const props = defineProps({
-  work: String,
-  done: Boolean,
-  status: Array,
   big: Object,
   index: Number,
 });
-let statusT = props.big?.status;
-// console.log(statusT[props.index]);/
-let done = ref<boolean>(props.big?.status || false);
+let done = ref<boolean>(props.big?.status);
+let statusT = done.value
+
 const emit = defineEmits([
   "deteleWork",
   "updateWork",
@@ -31,7 +28,7 @@ function handleFinish() {
 </script>
 <template>
   <div class="container">
-    <div class="lists" :class="{ finish: done }">
+    <div class="lists" :class="{ finish: props.big?.status }">
       <div class="list">{{ props.big?.workT }}</div>
       <div class="buttons">
         <button class="button" @click="handleDelete">

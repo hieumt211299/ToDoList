@@ -2,44 +2,32 @@
 import { ref, defineProps } from "vue";
 import CLineListsWork from "./CLineListsWork.vue";
 
+// lay du lieu tu local
 const toDoListTString = window.localStorage.getItem("toDoListT");
-const toDoListTLocal = toDoListTString
-  ?JSON.parse(toDoListTString):0
-  
+const toDoListTLocal = toDoListTString ? JSON.parse(toDoListTString):0
 const countIDString=window.localStorage.getItem('countID')
 const countIDLocal=countIDString?JSON.parse(countIDString):0
-console.log(countIDLocal);
+
 const update = ref(true);
 const props = defineProps({
   msg: String,
 });
-
 const placeholder = ref("");
-
 const work = ref("");
-// let done=ref(false)
-//
-
-//
-// let toDoList = ref<string[]>([]);
 const toDoListT = ref<{ workT: string, status: boolean,id:number }[]>([]);
 const displayList = ref<{ workT: string, status: boolean, id: number  }[]>([]);
 const countID=ref<number>()
 countID.value=countIDLocal||1
-// const status = ref<boolean[]>([]);
 const currenitem = ref<{ workT: string, status: boolean, id: number  }[]>([]);
-// toDoListT= toDoListTLocal.value? toDoListTLocal.value
 
 if (toDoListTLocal) {
   toDoListT.value = toDoListTLocal;
   displayList.value = toDoListT.value;
 }
 
-// const clonedToDoListT = [...toDoListT.value];
-// console.log(toDoListT.value.length);
-function handleSubmit() {
+function handleSubmit() { /* function nhap* */
   if (work.value.length > 0) {
-    let test = {
+    const test = {
       workT: work.value,
       status: false,
       id:countID.value||1
@@ -53,12 +41,9 @@ function handleSubmit() {
   }
 }
 function deleteItem(index: number, work: String) { /* delete work* */
-  // // -----
-  // toDoListT.value.splice(index, 1);
-  // location.reload();
+
   index
-  // window.localStorage.setItem("toDoListT", JSON.stringify(toDoListT.value));
-  // ------
+
   let test =  toDoListT.value.filter((x) => {
     return x.workT == work;
   });
@@ -73,8 +58,8 @@ function deleteItem(index: number, work: String) { /* delete work* */
   window.localStorage.setItem("toDoListT", JSON.stringify(toDoListT.value));
 }
 
-function updateItem(status: boolean, currenWork: string, id:number) {
-  placeholder.value = currenWork;
+function updateItem(status: boolean, currenWork: string, id:number) { /** sua work */
+  work.value = currenWork
   update.value = !update.value;
    let test = {
     workT: currenWork,
@@ -83,53 +68,39 @@ function updateItem(status: boolean, currenWork: string, id:number) {
   };
   currenitem.value.push(test)
 }
-function onUpdate(): void {
-
+function onUpdate(): void {/**cap nhat work  */
   toDoListT.value.forEach((x)=>{
     if(x.id== currenitem.value[0].id){
-      console.log(x.id);
-      toDoListT.value[x.id - 1].workT=work.value
+      x.workT=work.value
     }
   })
-
   update.value = !update.value;
   work.value = "";
   placeholder.value = "";
   currenitem.value = [];
   window.localStorage.setItem("toDoListT", JSON.stringify(toDoListT.value));
-  
-
-  // toDoList.value[currenitem.value[0]] = work.value
-  // currenitem.value.splice(0, currenitem.value.length)
-  // update.value = !update.value
-  // work.value = ''
-  // placeholder.value = ''
 }
-function updateStatus(statusT: boolean, id: number,index:number) {
-
-  toDoListT.value[id-1].status=statusT;
-  displayList.value[index].status=statusT
-  console.log(toDoListT.value);
-  console.log(displayList.value);
+function updateStatus(statusT: boolean, id: number,index:number) { /** cap nhat trang thai */
+  displayList.value[index].status = statusT
+   toDoListT.value.forEach((x) => {
+    if (x.id == id) {
+      x.status = statusT
+    }
+  })
   window.localStorage.setItem("toDoListT", JSON.stringify(toDoListT.value));
-
-  // console.log(displayList.value[index].status=statusT);
-
 }
 
 //  search function
 const search = ref("");
-const searchList = ref<{ workT: string, status: boolean, id: number }[]>([]);
 function handleSearch() {
-  
+
+  console.log(toDoListT.value);
   displayList.value = toDoListT.value;
-  searchList.value = displayList.value.filter((x) => {
+  displayList.value = displayList.value.filter((x) => {
     return (x).workT.includes(search.value);
   });
-
-  displayList.value = searchList.value;
+  console.log(displayList.value)
 }
-
 
 </script>
 
@@ -142,15 +113,15 @@ function handleSearch() {
     >
       <label for="worktodo"></label>
       <input
-        class="text"
         type="text"
         name="worktodo"
         id="worktodo"
-        :placeholder="placeholder"
         v-model="work"
+        class="text"
       />
       <input class="button" type="submit" value="Submit" v-if="update" />
       <input
+      
         class="button"
         type="submit"
         value="update"
