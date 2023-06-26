@@ -1,33 +1,35 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits } from "vue";
+import { Todo } from "./HelloWorld.vue";
 
-const props = defineProps({
-  big: Object,
-  index: Number,
-});
-let done = ref<boolean>(props.big?.status);
+interface Props {
+  todo: Todo;
+}
 
-const emit = defineEmits([
-  "deteleWork",
-  "updateWork",
-  "finishWork",
-  "statusTest",
-]);
+interface Emits {
+  (event: "deteleWork"): void;
+  (event: "updateWork"): void;
+  (event: "finishWork"): void;
+  (event: "handleStatus"): void;
+}
+
+const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
+
 function handleDelete() {
-  emit("deteleWork",  props.big?.workT);
+  emit("deteleWork");
 }
 function handleUpdate() {
-  emit("updateWork", props.big?.status, props.big?.workT, props.big?.id);
+  emit("updateWork");
 }
 function handleFinish() {
-  done.value = !done.value;
-  emit("statusTest",  done.value, props.big?.id, props.index);
+  emit("handleStatus");
 }
 </script>
 <template>
   <div class="container">
-    <div class="lists" :class="{ finish: props.big?.status }">
-      <div class="list">{{ props.big?.workT }}</div>
+    <div class="lists" :class="{ finish: props.todo.status }">
+      <div class="list">{{ props.todo.value }}</div>
       <div class="buttons">
         <button class="button" @click="handleDelete">
           <img src="../assets/trash.png" alt="" />
@@ -83,11 +85,11 @@ function handleFinish() {
   border-radius: 15px;
   color: black !important;
 }
-.list{
+.list {
   overflow: auto;
   white-space: nowrap;
 }
-.list::-webkit-scrollbar{
+.list::-webkit-scrollbar {
   height: 3px;
 }
 .list::-webkit-scrollbar-track {
