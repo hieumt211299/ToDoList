@@ -23,4 +23,5 @@ import HelloWorld from './components/HelloWorld.vue'
 html{
    background: linear-gradient(135deg, #8052ec, #d161ff) no-repeat;
 }
+
 </style>

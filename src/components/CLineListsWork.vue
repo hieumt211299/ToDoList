@@ -6,7 +6,6 @@ const props = defineProps({
   index: Number,
 });
 let done = ref<boolean>(props.big?.status);
-let statusT = done.value
 
 const emit = defineEmits([
   "deteleWork",
@@ -15,14 +14,14 @@ const emit = defineEmits([
   "statusTest",
 ]);
 function handleDelete() {
-  emit("deteleWork", props.index, props.big?.workT);
+  emit("deteleWork",  props.big?.workT);
 }
 function handleUpdate() {
   emit("updateWork", props.big?.status, props.big?.workT, props.big?.id);
 }
 function handleFinish() {
-  statusT.value = !statusT.value;
-  emit("statusTest", statusT.value, props.big?.id, props.index);
+  done.value = !done.value;
+  emit("statusTest",  done.value, props.big?.id, props.index);
 }
 </script>
 <template>
@@ -83,6 +82,24 @@ function handleFinish() {
   cursor: pointer;
   border-radius: 15px;
   color: black !important;
+}
+.list{
+  overflow: auto;
+  white-space: nowrap;
+}
+.list::-webkit-scrollbar{
+  height: 3px;
+}
+.list::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+.list::-webkit-scrollbar-thumb {
+  background-color: #888;
+  height: 10px;
+}
+.list::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
 }
 
 h3 {
