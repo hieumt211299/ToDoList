@@ -28,8 +28,8 @@ function handleFinish() {
 </script>
 <template>
   <div class="container">
-    <div class="lists" :class="{ finish: props.todo.status }">
-      <div class="list">{{ props.todo.value }}</div>
+    <div class="lists" :class="{ finish: props.todo.completed }">
+      <div class="list">{{ props.todo.title }}</div>
       <div class="buttons">
         <button class="button" @click="handleDelete">
           <img src="../assets/trash.png" alt="" />
@@ -48,6 +48,7 @@ function handleFinish() {
 .finish .list {
   text-decoration: line-through;
 }
+
 .container {
   width: 500px;
 }
@@ -85,13 +86,16 @@ function handleFinish() {
   border-radius: 15px;
   color: black !important;
 }
+
 .list {
   overflow: auto;
   white-space: nowrap;
 }
+
 .list::-webkit-scrollbar {
   height: 3px;
 }
+
 .list::-webkit-scrollbar-track {
   background-color: #f1f1f1;
 }
@@ -100,6 +104,7 @@ function handleFinish() {
   background-color: #888;
   height: 10px;
 }
+
 .list::-webkit-scrollbar-thumb:hover {
   background-color: #555;
 }

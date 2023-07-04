@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref, defineProps, onMounted, unref } from "vue";
+import { ref, defineProps, onMounted, unref, watch, onBeforeMount } from "vue";
 import CLineListsWork from "./CLineListsWork.vue";
+import axios from "axios";
 
 const props = defineProps({
   msg: String,
 });
 export interface Todo {
-  value: string;
-  status: boolean;
+  title: string;
+  completed: boolean;
   id: number;
 }
 const isUpdate = ref(false);
@@ -16,13 +17,30 @@ const todos = ref<Todo[]>([]);
 const filterTodo = ref<Todo[]>([]);
 const id = ref<number>();
 const search = ref("");
+const currentPage = ref<number>(1)
+const bigData = ref<Todo[]>([]);
+const totalPage = ref<number>()
+const pageCount = ref<number>(0)
 
-onMounted(() => {
-  const dataStorage = window.localStorage.getItem("todos");
-  if (dataStorage) {
-    todos.value = JSON.parse(dataStorage);
-  }
-});
+onBeforeMount(() => {
+  axios.get('https://jsonplaceholder.typicode.com/todos')
+    .then(Response => {
+      bigData.value = Response.data
+      totalPage.value = bigData.value.length
+      pageCount.value = totalPage.value / 10
+      for (let i = 0; i < 10; i++) {
+        todos.value.push(bigData.value[i])
+      }
+    })
+
+}),
+  onMounted(() => {
+    // const dataStorage = window.localStorage.getItem("todos");
+    // if (dataStorage) {
+    //   todos.value = JSON.parse(dataStorage);
+    // }
+
+  });
 
 function saveLocal(nameLocal: string, list: any) {
   window.localStorage.setItem(nameLocal, JSON.stringify(list));
@@ -33,8 +51,8 @@ function handleSubmit() {
   if (!valueInput) return;
 
   const data = {
-    value: valueInput,
-    status: false,
+    title: valueInput,
+    completed: false,
     id: new Date().valueOf(),
   };
 
@@ -53,14 +71,14 @@ function deleteItem(id: number) {
 }
 
 function updateItem(todo: Todo) {
-  work.value = todo.value;
+  work.value = todo.title;
   isUpdate.value = !unref(isUpdate);
   id.value = todo.id;
 }
 function onUpdate(): void {
   todos.value = todos.value.map((todo) => {
     if (todo.id === unref(id)) {
-      todo.value = unref(work);
+      todo.title = unref(work);
     }
     return todo;
   });
@@ -73,12 +91,12 @@ function onUpdate(): void {
 }
 function updateStatus(todo: Todo, index: number) {
   if (filterTodo.value.length) {
-    filterTodo.value[index].status = !todo.status;
+    filterTodo.value[index].completed = !todo.completed;
   }
 
   todos.value = todos.value.map((t) => {
     if (t.id === todo.id) {
-      todo.status = !todo.status;
+      todo.completed = !todo.completed;
     }
     return t;
   });
@@ -87,50 +105,49 @@ function updateStatus(todo: Todo, index: number) {
 }
 
 function handleSearch() {
-  filterTodo.value = todos.value.filter((x) => x.value.includes(search.value));
+  filterTodo.value = todos.value.filter((x) => x.title.includes(search.value));
 }
+
+function handleCurrentChange(page: number) {
+  currentPage.value = page
+}
+watch(currentPage, (newPage) => {
+  todos.value = []
+  for (let i = newPage * 10 - 10; i < newPage * 10; i++) {
+    todos.value.push(bigData.value[i])
+  }
+})
 </script>
 
 <template>
   <h1>{{ props.msg }}</h1>
   <div class="container">
-    <form @submit.prevent="handleSubmit" class="newtask">
+    <el-form @submit.prevent="handleSubmit" class="newtask">
       <label for="valueodo"></label>
-      <input
-        type="text"
-        name="valueodo"
-        id="valueodo"
-        v-model="work"
-        class="text"
-      />
-      <input class="button" type="submit" value="Submit" v-if="!isUpdate" />
-      <input
-        v-else
-        class="button"
-        type="submit"
-        value="update"
-        @click="onUpdate"
-      />
-    </form>
+      <el-input type="text" name="valueodo" id="valueodo" v-model="work" class="text" />
+      <el-button class="button" type="primary" value="Submit" v-if="!isUpdate" @click="handleSubmit">Submit</el-button>
+      <el-button v-else class="button" type="primary" value="update" @click="onUpdate">Update</el-button>
+    </el-form>
+    <el-form @submit.prevent="handleSearch">
+      <label for="search"></label>
+      <el-input type="text" name="sreach" id="sreach" v-model="search" />
+      <el-button type="primary" value="Submit" @click="handleSearch">Search</el-button>
+    </el-form>
+
   </div>
-  <!-- <CLineListsWork v-for="(work, index ,test) in toDoList" :key="index" :work="work" :index='index' :test="test" :status="status" @deteleWork="deleteItem" @update-work="updateItem" @status-test="updateStatus" /> -->
-  <form @submit.prevent="handleSearch">
-    <label for="search"></label>
-    <input type="text" name="sreach" id="sreach" v-model="search" />
-    <input type="submit" value="Submit" />
-  </form>
-  <CLineListsWork
-    v-for="(todo, index) in filterTodo.length ? filterTodo : todos"
-    :todo="todo"
-    :key="index"
-    :index="index"
-    @deteleWork="() => deleteItem(todo.id)"
-    @update-work="() => updateItem(todo)"
-    @handle-status="() => updateStatus(todo, index)"
-  />
+  <CLineListsWork v-for="(todo, index) in filterTodo.length ? filterTodo : todos" :todo="todo" :key="index" :index="index"
+    @deteleWork="() => deleteItem(todo.id)" @update-work="() => updateItem(todo)"
+    @handle-status="() => updateStatus(todo, index)" />
+
+  <el-pagination style="margin-top: 25px;" background layout="prev, pager, next" :total="totalPage" v-model="currentPage"
+    @current-change="handleCurrentChange" :page-count="pageCount" />
 </template>
 
 <style scoped>
+.el-pagination {
+  justify-content: center;
+}
+
 h3 {
   margin: 40px 0 0;
 }
