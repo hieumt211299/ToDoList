@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+// import HelloWorld from './components/HelloWorld.vue';
+import SearchBar from './components/searchBar/SearchBar.vue'
 </script>
 
 <template>
-  <HelloWorld msg="To Do List" />
+  <!-- <HelloWorld msg="To Do List" /> -->
+  <SearchBar>
+    <template #prefix>
+      <img src="/src/assets/Search.svg" alt="search-icon">
+    </template>
+  </SearchBar>
 </template>
 
 <style >
