@@ -1,10 +1,13 @@
 <script setup lang="ts">
+// import { ref } from "vue";
 // import HelloWorld from './components/HelloWorld.vue';
 // import SearchBar from "./components/Input/SearchBar.vue";
-// import Button from './components/button/Button.vue';
+// import Button from "./components/button/Button.vue";
 // import CheckBox from "./components/checkBox/CheckBox.vue";
 // import Tags from './components/Tags/Tags.vue'
-import Button from "./components/button/Button.vue";
+// import Button from "./components/button/Button.vue";
+import ToDoList from "./components/ToDoList.vue";
+import "./style.css";
 </script>
 <template>
   <!-- <HelloWorld msg="To Do List" /> -->
@@ -16,7 +19,12 @@ import Button from "./components/button/Button.vue";
   <!-- <Primary></Primary> -->
   <!-- <CheckBox></CheckBox> -->
   <!-- <Tags></Tags> -->
-  <Button></Button>
+  <!-- <Button :butonContent="butonContent">
+    <template #prefix>
+      <img src="./assets/add.svg" alt="" />
+    </template>
+  </Button> -->
+  <ToDoList></ToDoList>
 </template>
 
 <style lang="scss">

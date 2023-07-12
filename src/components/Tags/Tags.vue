@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { ref } from "vue";
-
-const tagStage = ref<string>("Success");
+// import { ref } from "vue";
+interface Props {
+  tagStage: string;
+  tagContent: boolean;
+}
+const props = defineProps<Props>();
 </script>
 <template>
-  <div class="vtags" :class="tagStage.toLocaleLowerCase()">{{ tagStage }}</div>
+  <div class="vtags" :class="[props.tagStage]">
+    {{ tagContent ? "DONE" : "TO DO" }}
+  </div>
 </template>
 
 <style lang="scss" scoped>

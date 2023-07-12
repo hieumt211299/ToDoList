@@ -6,7 +6,7 @@ interface Props {
 }
 
 interface Emits {
-  (event: "deteleWork"): void;
+  (event: "deteleWork", id: number): void;
   (event: "updateWork"): void;
   (event: "finishWork"): void;
   (event: "handleStatus"): void;
@@ -16,7 +16,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 function handleDelete() {
-  emit("deteleWork");
+  emit("deteleWork", props.todo.id);
 }
 function handleUpdate() {
   emit("updateWork");

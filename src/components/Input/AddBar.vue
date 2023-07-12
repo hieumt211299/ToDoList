@@ -4,16 +4,18 @@ import { ref } from "vue";
 interface Emits {
   (event: "handleFocus", FocusEvent: any): void;
   (event: "handleBlur", BlurEvent: any): void;
-  (event: "handleChange", ChangeEvent: any): void;
+  (event: "handleChange", ChangeEvent: any, work: string): void;
+  (event: "getWork", work: string): void;
   (event: "handleKeydown", KeyDownEvent: any): void;
-  (event: "handleEnterdown", data: string): void;
+  (event: "handleEnter", key: string): void;
 }
 
 interface Attrs {
   class: string;
 }
-const search = ref<string>("");
-const placeholder = ref<string>("Search...");
+
+const work = ref<string>("");
+const placeholder = ref<string>("Add Work");
 const emit = defineEmits<Emits>();
 const focused = ref<boolean>(false);
 const attrs = ref<Attrs>();
@@ -29,16 +31,13 @@ const handleBlur = (event: FocusEvent) => {
 };
 
 const handleChange = (event: Event) => {
-  emit("handleChange", event);
+  event;
+  emit("getWork", work.value);
+  work.value = "";
 };
 
 const handleKeydown = (event: KeyboardEvent) => {
-  if (event.key == "Enter") {
-    emit("handleEnterdown", search.value);
-  }
-};
-const test = () => {
-  console.log(test);
+  emit("handleKeydown", event);
 };
 </script>
 
@@ -52,7 +51,7 @@ const test = () => {
       type="text"
       class="vsearch-input"
       v-bind="attrs"
-      v-model="search"
+      v-model="work"
       :placeholder="placeholder"
       @focus="handleFocus"
       @blur="handleBlur"

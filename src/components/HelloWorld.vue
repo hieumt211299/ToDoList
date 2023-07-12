@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineProps, onMounted, unref, watch, onBeforeMount } from "vue";
+import { ref, onMounted, unref, watch, onBeforeMount } from "vue";
 import CLineListsWork from "./CLineListsWork.vue";
 import axios from "axios";
 
@@ -17,29 +17,26 @@ const todos = ref<Todo[]>([]);
 const filterTodo = ref<Todo[]>([]);
 const id = ref<number>();
 const search = ref("");
-const currentPage = ref<number>(1)
+const currentPage = ref<number>(1);
 const bigData = ref<Todo[]>([]);
-const totalPage = ref<number>()
-const pageCount = ref<number>(0)
+const totalPage = ref<number>();
+const pageCount = ref<number>(0);
 
 onBeforeMount(() => {
-  axios.get('https://jsonplaceholder.typicode.com/todos')
-    .then(Response => {
-      bigData.value = Response.data
-      totalPage.value = bigData.value.length
-      pageCount.value = totalPage.value / 10
-      for (let i = 0; i < 10; i++) {
-        todos.value.push(bigData.value[i])
-      }
-    })
-
+  axios.get("https://jsonplaceholder.typicode.com/todos").then((Response) => {
+    bigData.value = Response.data;
+    totalPage.value = bigData.value.length;
+    pageCount.value = totalPage.value / 10;
+    for (let i = 0; i < 10; i++) {
+      todos.value.push(bigData.value[i]);
+    }
+  });
 }),
   onMounted(() => {
     // const dataStorage = window.localStorage.getItem("todos");
     // if (dataStorage) {
     //   todos.value = JSON.parse(dataStorage);
     // }
-
   });
 
 function saveLocal(nameLocal: string, list: any) {
@@ -109,14 +106,14 @@ function handleSearch() {
 }
 
 function handleCurrentChange(page: number) {
-  currentPage.value = page
+  currentPage.value = page;
 }
 watch(currentPage, (newPage) => {
-  todos.value = []
+  todos.value = [];
   for (let i = newPage * 10 - 10; i < newPage * 10; i++) {
-    todos.value.push(bigData.value[i])
+    todos.value.push(bigData.value[i]);
   }
-})
+});
 </script>
 
 <template>
@@ -124,23 +121,57 @@ watch(currentPage, (newPage) => {
   <div class="container">
     <el-form @submit.prevent="handleSubmit" class="newtask">
       <label for="valueodo"></label>
-      <el-input type="text" name="valueodo" id="valueodo" v-model="work" class="text" />
-      <el-button class="button" type="primary" value="Submit" v-if="!isUpdate" @click="handleSubmit">Submit</el-button>
-      <el-button v-else class="button" type="primary" value="update" @click="onUpdate">Update</el-button>
+      <el-input
+        type="text"
+        name="valueodo"
+        id="valueodo"
+        v-model="work"
+        class="text"
+      />
+      <el-button
+        class="button"
+        type="primary"
+        value="Submit"
+        v-if="!isUpdate"
+        @click="handleSubmit"
+        >Submit</el-button
+      >
+      <el-button
+        v-else
+        class="button"
+        type="primary"
+        value="update"
+        @click="onUpdate"
+        >Update</el-button
+      >
     </el-form>
     <el-form @submit.prevent="handleSearch">
       <label for="search"></label>
       <el-input type="text" name="sreach" id="sreach" v-model="search" />
-      <el-button type="primary" value="Submit" @click="handleSearch">Search</el-button>
+      <el-button type="primary" value="Submit" @click="handleSearch"
+        >Search</el-button
+      >
     </el-form>
-
   </div>
-  <CLineListsWork v-for="(todo, index) in filterTodo.length ? filterTodo : todos" :todo="todo" :key="index" :index="index"
-    @deteleWork="() => deleteItem(todo.id)" @update-work="() => updateItem(todo)"
-    @handle-status="() => updateStatus(todo, index)" />
+  <CLineListsWork
+    v-for="(todo, index) in filterTodo.length ? filterTodo : todos"
+    :todo="todo"
+    :key="index"
+    :index="index"
+    @deteleWork="() => deleteItem(todo.id)"
+    @update-work="() => updateItem(todo)"
+    @handle-status="() => updateStatus(todo, index)"
+  />
 
-  <el-pagination style="margin-top: 25px;" background layout="prev, pager, next" :total="totalPage" v-model="currentPage"
-    @current-change="handleCurrentChange" :page-count="pageCount" />
+  <el-pagination
+    style="margin-top: 25px"
+    background
+    layout="prev, pager, next"
+    :total="totalPage"
+    v-model="currentPage"
+    @current-change="handleCurrentChange"
+    :page-count="pageCount"
+  />
 </template>
 
 <style scoped>

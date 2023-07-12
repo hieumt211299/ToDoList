@@ -1,36 +1,39 @@
 <script setup lang="ts">
-// import { ref } from "vue";
+import { ref } from "vue";
 
+interface Pops {
+  butonContent: string;
+}
 interface Emits {
   (event: "handleClick"): void;
 }
-
 const emit = defineEmits<Emits>();
+const props = defineProps<Pops>();
+// const btnContent = ref<string>();
+const butonContent = ref<string>(props.butonContent || "Button");
 
 const handleClick = () => {
-  console.log("test");
   emit("handleClick");
 };
 </script>
 
 <template>
-  <el-button type="primary" class="vbutton" @click="handleClick">
+  <el-button
+    type="primary"
+    class="vbutton flex gap-2 py-1.5 px-3 items-center box-content h-5 bg-blue-600"
+    @click="handleClick"
+  >
     <!-- <img src="/src/assets/add.svg" alt="" /> -->
-    <slot></slot>
-    <span class="vbutton-text">Button</span>
+    <slot name="prefix"></slot>
+    <span class="vbutton-text">{{ butonContent }}</span>
+    <slot name="suffix"></slot>
   </el-button>
 </template>
-<style lang="scss" scoped>
+<style lang="scss">
 .vbutton {
-  display: flex;
-  gap: 8px;
-  padding: 6px 12px;
-  align-items: center;
   background-color: #2264e5;
   border: none;
-  box-sizing: content-box;
-  height: 20px;
-  width: 71px;
+
   box-shadow: 0px 2px 5px 0px rgba(34, 100, 229, 0.12), 0px 0px 0px 1px #2264e5,
     0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 0px 0px #4b85fa inset;
   &:hover {
@@ -56,5 +59,9 @@ const handleClick = () => {
     line-height: 20px;
     letter-spacing: 0.28px;
   }
+}
+.el-button:focus,
+.el-button:hover {
+  background-color: #1354d4;
 }
 </style>
