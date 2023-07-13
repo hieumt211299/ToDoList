@@ -17,6 +17,7 @@ interface Emits {
   (even: "handleDelete", id: number): void;
   (even: "handleUpdate", todo: Todo): void;
   (even: "handleCheck", todo: Todo): void;
+  (even: "testSelect", index: number): void;
 }
 const emit = defineEmits<Emits>();
 const dialogUpdate = ref<boolean>(false);
@@ -43,13 +44,18 @@ const handleCancelUpdate = () => {
   dialogUpdate.value = false;
   work.value = "";
 };
+const handleCheckBox = () => {
+  // console.log(props.todo);
+  emit("testSelect", props.todo.id);
+};
 </script>
 <template>
   <div
     class="flex flex-col gap-8 px-5 py-3"
     :class="index % 2 != 0 ? 'odd' : 'even'"
   >
-    <div class="column-header grid grid-cols-6 gap-4 items-center text-left">
+    <div class="column-header grid grid-cols-7 gap-4 items-center text-left">
+      <el-checkbox @change="handleCheckBox"></el-checkbox>
       <div class="w-32">{{ props.todo.id || "" }}</div>
       <div class="col-span-3 max-w-md w-96 h-12 flex items-center">
         {{ props.todo.title || "" }}
@@ -89,7 +95,11 @@ const handleCancelUpdate = () => {
           </template>
         </el-dialog>
 
-        <v-check class="w-6 h-6 cursor-pointer" @click="handleCheck"></v-check>
+        <v-check
+          class="w-6 h-6 cursor-pointer"
+          :class="{ hidden: props.todo.completed }"
+          @click="handleCheck"
+        ></v-check>
       </div>
     </div>
   </div>

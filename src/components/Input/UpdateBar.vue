@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 interface Emits {
   (event: "handleFocus", FocusEvent: any): void;
@@ -13,14 +13,24 @@ interface Attrs {
   class: string;
 }
 interface Props {
+  stage: boolean;
   test: string;
 }
 const props = defineProps<Props>();
+
 const work = ref<string>(props.test);
 const placeholder = ref<string>("Update");
 const emit = defineEmits<Emits>();
 const focused = ref<boolean>(false);
 const attrs = ref<Attrs>();
+
+// watch(props, (newTest) => {
+//   console.log(newTest);
+//   work.value = props.test;
+// });
+watch(props, () => {
+  work.value = props.test;
+});
 const handleFocus = (event: FocusEvent) => {
   emit("handleFocus", event);
 };
