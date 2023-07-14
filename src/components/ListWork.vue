@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { Todo } from "./ToDoList.vue";
 import Tags from "./Tags/Tags.vue";
 // import Button from "./button/Button.vue";s
@@ -74,6 +74,7 @@ const handleCheckBox = () => {
           <UpdateBar
             @handle-change="getUpdate"
             class="w-full"
+            :stage="props.todo.completed"
             :test="props.todo.title"
           ></UpdateBar>
           <template #footer>
@@ -111,4 +112,4 @@ const handleCheckBox = () => {
 .even {
   background: #f9fafc;
 }
-</style>
+</style> -->

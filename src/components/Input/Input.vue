@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
+
+type TargetElement = HTMLInputElement | HTMLTextAreaElement;
 
 interface Emits {
   (event: "handleFocus", FocusEvent: any): void;
   (event: "handleBlur", BlurEvent: any): void;
-  (event: "handleChange", ChangeEvent: any): void;
+  (event: "handleChange", ChangeEvent: string): void;
   (event: "handleKeydown", KeyDownEvent: any): void;
-  (event: "handleEnterdown", data: string): void;
+  (event: "handleEnter", key: string): void;
 }
-
-interface Attrs {
-  class: string;
+interface Props {
+  work: string;
+  placeholder: string;
 }
-const search = ref<string>("");
-const placeholder = ref<string>("Search...");
+const props = defineProps<Props>();
+const work = ref<string>(props.work);
+const placeholder = ref<string>(props.placeholder);
 const emit = defineEmits<Emits>();
 const focused = ref<boolean>(false);
-const attrs = ref<Attrs>();
+const attrs = ref<string>();
 
 const handleFocus = (event: FocusEvent) => {
   focused.value = true;
@@ -29,17 +32,15 @@ const handleBlur = (event: FocusEvent) => {
 };
 
 const handleChange = (event: Event) => {
-  emit("handleChange", event);
+  emit("handleChange", (event.target as TargetElement).value);
 };
 
 const handleKeydown = (event: KeyboardEvent) => {
-  if (event.key == "Enter") {
-    emit("handleEnterdown", search.value);
-  }
+  emit("handleKeydown", event);
 };
-const test = () => {
-  console.log(test);
-};
+watch(props, () => {
+  work.value = props.work;
+});
 </script>
 
 <template>
@@ -52,7 +53,7 @@ const test = () => {
       type="text"
       class="vsearch-input"
       v-bind="attrs"
-      v-model="search"
+      v-model="work"
       :placeholder="placeholder"
       @focus="handleFocus"
       @blur="handleBlur"
